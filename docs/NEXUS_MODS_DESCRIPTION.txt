@@ -1,0 +1,39 @@
+[b][size=5]RoN Mod Switcher v1.0.0 — Ready or Not Mod Manager & Instant Vanilla Switcher[/size][/b]
+[i]Built by Vosien Studio[/i]
+
+Tired of manually cutting and pasting [b]~mods[/b] folders or wiping [b]mod.io[/b] cache just to join a public Vanilla lobby — then struggling to remember which mods your Co-Op squad uses?
+
+[b]RoN Mod Switcher[/b] is a lightweight, standalone Windows tool that manages both [b]Nexus Mods (~mods)[/b] and [b]in-game mod.io[/b] content in one place using zero-duplication same-volume moves.
+
+[b][size=4]Key Features[/size][/b]
+[list]
+[*][b]0.1s Instant Switch (Zero Duplication):[/b] Moves [i]~mods[/i], [i]Paks\mod.io[/i], and [i]C:\Users\Public\mod.io\8254[/i] cleanly in milliseconds without copying gigabytes of data.
+[*][b]Steam & Epic Games Support:[/b] Auto-detects both Steam and Epic installs (plus manual folder selection if needed).
+[*][b]Built-In & Custom Profiles:[/b] Switch between [b]Co-Op (Modded Lobby)[/b], [b]Solo (Full Modded)[/b], [b]Vanilla (Online)[/b], or save your own custom presets.
+[*][b]Co-Op Loadout Share & Compare:[/b] Generate a compact [b]RONMODS1:[/b] share code or [i].pak[/i] list, paste a friend's code to spot matching/missing/extra mods instantly, and 1-click sync your Co-Op profile.
+[*][b]UE5 IoStore Bundle Grouping:[/b] Automatically groups [i].pak / .ucas / .utoc / .sig[/i] files together so companion files never get left behind.
+[*][b]Package Health Warnings:[/b] Automatically flags corrupt 0 KB files, missing [i].utoc / .ucas[/i] companion files, and empty mod folders.
+[*][b]Bulk Actions & Drag-and-Drop Install:[/b] Search/filter mods, toggle filtered mods in bulk ([i]Enable All / Disable All[/i]), drag-and-drop [i].zip / .pak[/i] archives or folders to install, and delete safely to the Recycle Bin.
+[*][b]Detailed mod.io Inspection:[/b] Parses [i]state.json[/i] subscriptions, [i]Paks\mod.io[/i] packages, and cache sizes.
+[*][b]Safe Server Side Checksum Control + 1-Click INI Restore:[/b] Automatically toggles [i]bServerSideChecksum[/i], [i]bJoinModdedServers[/i], and [i]bAllowModdedPlayers[/i] in [i]GameUserSettings.ini[/i], creates a [i].ronswitch.bak[/i] backup beforehand, and lets you restore it anytime.
+[*][b]Quick Launch API Selector:[/b] Switch between [b]Launcher (URI)[/b], [b]DX11[/b], and [b]DX12[/b] directly from Mission Control, protected by a 6-second launch cooldown and Game Running lock.
+[*][b]TR / EN Interface:[/b] Full Turkish and English UI switcher included.
+[/list]
+
+[b][size=4]Installation & Requirements[/size][/b]
+[list=1]
+[*]Download and extract the [b]RoNModSwitcher[/b] folder anywhere (portable Windows app, no installer needed).
+[*]Run [b]RoNModSwitcher.exe[/b] (make sure Ready or Not is closed before switching mods).
+[*]Requires Windows 10/11 with Microsoft Edge WebView2 Runtime (already installed on modern Windows systems).
+[/list]
+
+[b][size=4]Security & Verification (0/64 Clean)[/size][/b]
+[list]
+[*][b]VirusTotal Scan (ZIP):[/b] [url=https://www.virustotal.com/gui/file/ebe75a6018a543bce097bed8ad2a83c90e7cd3ccd0bf838ee6aff95a0e30d970?nocache=1]View VirusTotal Report (0/64 Clean)[/url]
+[*][b]ZIP SHA-256:[/b] [i]ebe75a6018a543bce097bed8ad2a83c90e7cd3ccd0bf838ee6aff95a0e30d970[/i]
+[*][b]EXE SHA-256:[/b] [i]1072898f561a139489f23fd3663a7a8f440cd59a3f329fe58688e4203167b8ff[/i]
+[/list]
+
+[b][size=4]Community & Support[/size][/b]
+Need help or want to report a bug? Join the Vosien Studio Discord:
+[url=https://discord.gg/29bndFuds3]https://discord.gg/29bndFuds3[/url]

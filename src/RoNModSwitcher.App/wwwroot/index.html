@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>RoN Mod Switcher</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="workspace-shell">
+    <!-- Left Architectural Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <img src="logo.png" alt="Vosien Studio" class="brand-mark" width="36" height="36">
+        <div class="brand-meta">
+          <span class="brand-studio" data-i18n="studioBadge">Vosien Studio</span>
+          <div class="brand-name-row">
+            <h1 class="brand-name" data-i18n="appTitle">RoN Mod Switcher</h1>
+            <span class="brand-ver" id="appVersionBadge">v1.0.0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-label" data-i18n="navSectionLabel">VOSIEN // OPERATIONS</div>
+
+      <nav class="nav-list" role="tablist" aria-orientation="vertical" aria-label="Primary sections">
+        <button type="button"
+                role="tab"
+                id="tab-control"
+                class="nav-item"
+                aria-selected="true"
+                data-tab="control">
+          <span class="nav-num">01</span>
+          <span class="nav-text" data-i18n="tabControl">Mission Control</span>
+        </button>
+
+        <button type="button"
+                role="tab"
+                id="tab-mods"
+                class="nav-item"
+                aria-selected="false"
+                data-tab="mods">
+          <span class="nav-num">02</span>
+          <span class="nav-text" data-i18n="tabMods">Mod Manager</span>
+          <span class="nav-count" id="modsTabCounter">0</span>
+        </button>
+
+        <button type="button"
+                role="tab"
+                id="tab-settings"
+                class="nav-item"
+                aria-selected="false"
+                data-tab="settings">
+          <span class="nav-num">03</span>
+          <span class="nav-text" data-i18n="tabSettings">Settings &amp; Studio</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="telemetry-block">
+          <div class="telemetry-row" id="platformChip" title="">
+            <span class="tele-key" data-i18n="sidebarPlatformLabel">PLATFORM</span>
+            <span class="tele-val">
+              <span class="status-dot" id="platformDot"></span>
+              <span id="platformChipLabel">—</span>
+            </span>
+          </div>
+
+          <div class="telemetry-row" id="gameRunChip">
+            <span class="tele-key" data-i18n="sidebarGameLabel">GAME STATE</span>
+            <span class="tele-val">
+              <span class="status-dot" id="gameRunDot"></span>
+              <span id="gameRunLabel">Ready</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="sidebar-bottom-bar">
+          <div class="lang-switch" role="group" aria-label="Language">
+            <button type="button" class="lang-btn" id="btnLangTr" data-lang="tr">TR</button>
+            <button type="button" class="lang-btn" id="btnLangEn" data-lang="en">EN</button>
+          </div>
+
+          <button type="button" class="discord-link-btn" id="btnJoinDiscordFooter">
+            <span data-i18n="footerDiscord">Discord</span>
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Operations Canvas -->
+    <main class="canvas-scroll scroller">
+      <!-- Dynamic Alert Banners -->
+      <div id="migrationBanner" class="alert-strip alert-autumn" hidden>
+        <div class="alert-copy">
+          <strong data-i18n="legacyMigratedTitle">Legacy Setup Imported</strong>
+          <span id="migrationBannerText"></span>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" id="btnDismissMigration" data-i18n="dismiss">Dismiss</button>
+      </div>
+
+      <div id="noInstallBanner" class="alert-strip alert-warn" hidden>
+        <div class="alert-copy">
+          <strong data-i18n="noInstallTitle">Ready or Not Installation Not Found</strong>
+          <span data-i18n="noInstallDesc">We couldn't auto-detect a Steam or Epic Games installation.</span>
+        </div>
+        <button type="button" class="btn btn-solid" id="btnPickFolderBanner" data-i18n="pickFolderBtn">Select Game Folder</button>
+      </div>
+
+      <!-- TAB 1: MISSION CONTROL -->
+      <section role="tabpanel" id="panel-control" aria-labelledby="tab-control" class="tab-panel">
+        <div class="panel-wrap">
+          <!-- Single Unified Architectural Status Bar -->
+          <div class="command-strip" id="heroModeCard">
+            <div class="command-col command-state">
+              <span class="eyebrow" data-i18n="modeLabel">CURRENT STATE</span>
+              <h2 class="command-title" id="heroModeTitle">—</h2>
+              <p class="command-sub" id="heroModeStats">—</p>
+            </div>
+
+            <div class="command-divider" aria-hidden="true"></div>
+
+            <div class="command-col command-checksum">
+              <span class="eyebrow" data-i18n="checksumLabel">SERVER SIDE CHECKSUM</span>
+              <div class="checksum-line">
+                <strong class="checksum-val" id="heroChecksumTitle">—</strong>
+                <button type="button" class="btn btn-outline btn-sm" id="btnToggleChecksum" data-i18n="btnToggleChecksum">Toggle</button>
+              </div>
+              <p class="command-sub" data-i18n="checksumHint">Disable Server Side Checksum for modded friend lobbies.</p>
+            </div>
+
+            <div class="command-actions">
+              <button type="button" class="btn btn-outline" id="btnQuickToggleMode">Switch</button>
+              <button type="button" class="btn btn-solid" id="btnLaunchGameHero">
+                <span data-i18n="btnLaunchGame">Launch Game</span>
+                <span aria-hidden="true">→</span>
+              </button>
+              <div class="quick-api-switch" role="group" aria-label="Launch API">
+                <button type="button" class="api-btn" data-launch-mode="platformUri" data-i18n="apiLauncher">Launcher</button>
+                <button type="button" class="api-btn" data-launch-mode="directDx11" data-i18n="apiDx11">DX11</button>
+                <button type="button" class="api-btn" data-launch-mode="directDx12" data-i18n="apiDx12">DX12</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profiles Header -->
+          <div class="section-head">
+            <div>
+              <span class="eyebrow" data-i18n="profilesEyebrow">LOADOUT PROFILES</span>
+              <h3 class="section-title" data-i18n="profilesTitle">Quick Profiles</h3>
+            </div>
+            <div class="toolbar-group">
+              <button type="button" class="btn btn-outline" id="btnOpenShareCompare" data-i18n="btnShareCompare">Share / Compare</button>
+              <button type="button" class="btn btn-outline" id="btnOpenNewProfile" data-i18n="btnNewProfile">+ New Profile</button>
+            </div>
+          </div>
+
+          <!-- Architectural Profile Cards Grid -->
+          <div id="profilesGrid" class="profiles-grid"></div>
+        </div>
+      </section>
+
+      <!-- TAB 2: MOD MANAGER -->
+      <section role="tabpanel" id="panel-mods" aria-labelledby="tab-mods" class="tab-panel" hidden>
+        <div class="panel-wrap">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">~MODS &amp; IOSTORE</span>
+              <h3 class="section-title" data-i18n="modsTitle">Individual Mod Manager</h3>
+            </div>
+            <div class="toolbar-group">
+              <button type="button" class="btn btn-solid" id="btnAddMods" data-i18n="btnAddMods">+ Add Mods</button>
+              <button type="button" class="btn btn-outline" id="btnOpenModsFolder" data-i18n="btnOpenModsFolder">~mods Folder</button>
+              <button type="button" class="btn btn-ghost" id="btnRefreshMods" data-i18n="btnRefresh">Refresh</button>
+            </div>
+          </div>
+
+          <!-- Filter & Search Bar -->
+          <div class="filter-bar">
+            <div class="search-wrap">
+              <svg viewBox="0 0 24 24" class="search-ico" aria-hidden="true">
+                <path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+              </svg>
+              <input type="search" id="modSearchInput" class="search-input" placeholder="Search mod name or filename...">
+            </div>
+
+            <div class="toolbar-group">
+              <div class="segment-filters" role="group" aria-label="Mod status filter">
+                <button type="button" class="seg-btn is-active" data-filter="all" data-i18n="filterAll">All</button>
+                <button type="button" class="seg-btn" data-filter="enabled" data-i18n="filterEnabled">Enabled</button>
+                <button type="button" class="seg-btn" data-filter="disabled" data-i18n="filterDisabled">Disabled</button>
+              </div>
+              <button type="button" class="btn btn-outline btn-sm" id="btnEnableAllMods" data-i18n="btnEnableAll">Enable All</button>
+              <button type="button" class="btn btn-outline btn-sm" id="btnDisableAllMods" data-i18n="btnDisableAll">Disable All</button>
+            </div>
+          </div>
+
+          <!-- Clean Architectural Table-Style Mods List -->
+          <div id="modsList" class="mods-table"></div>
+
+          <!-- mod.io Section -->
+          <div id="modIoContainer" class="modio-box" hidden>
+            <div class="modio-head">
+              <h4 class="modio-title" data-i18n="modIoSectionTitle">mod.io Cache &amp; Packages</h4>
+              <p class="modio-sub" data-i18n="modIoSectionDesc">In-game mod.io content is automatically stashed in Vanilla mode.</p>
+            </div>
+            <div id="modIoList" class="modio-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: SETTINGS & STUDIO -->
+      <section role="tabpanel" id="panel-settings" aria-labelledby="tab-settings" class="tab-panel" hidden>
+        <div class="panel-wrap settings-stack">
+          <!-- Platform & Install Block -->
+          <div class="arch-box">
+            <div class="box-head">
+              <div>
+                <span class="eyebrow">01 // ENVIRONMENT</span>
+                <h3 class="section-title" data-i18n="settingsPlatformTitle">Game Installation &amp; Platform</h3>
+                <p class="section-sub" data-i18n="settingsPlatformDesc">Both Steam and Epic Games installs are auto-detected.</p>
+              </div>
+              <div class="toolbar-group">
+                <button type="button" class="btn btn-outline" id="btnBrowseFolderSettings" data-i18n="btnBrowseFolder">Browse Folder...</button>
+                <button type="button" class="btn btn-outline" id="btnOpenIniFolder" data-i18n="btnOpenIniFolder">Open Config Folder</button>
+              </div>
+            </div>
+
+            <div id="installationsList" class="install-list"></div>
+
+            <div class="ini-line">
+              <span class="ini-label" data-i18n="iniPathLabel">GameUserSettings.ini Path:</span>
+              <code id="iniPathValue" class="mono-code">—</code>
+              <button type="button" class="btn btn-outline btn-sm ini-restore-btn" id="btnRestoreIni" data-i18n="btnRestoreIni" hidden>Restore INI Backup</button>
+            </div>
+          </div>
+
+          <!-- Launch & Switch Preferences -->
+          <div class="arch-box">
+            <span class="eyebrow">02 // EXECUTION</span>
+            <h3 class="section-title" data-i18n="settingsLaunchTitle">Launch &amp; Switch Preferences</h3>
+
+            <div class="form-grid">
+              <label class="form-field">
+                <span class="field-label" data-i18n="launchModeLabel">Game Launch Method</span>
+                <select id="selectLaunchMode" class="arch-select">
+                  <option value="platformUri" data-i18n="launchUri">Platform Launcher (Steam / Epic URI)</option>
+                  <option value="directDx11" data-i18n="launchDx11">Direct Executable (DirectX 11)</option>
+                  <option value="directDx12" data-i18n="launchDx12">Direct Executable (DirectX 12)</option>
+                  <option value="directExe" data-i18n="launchDirectExe">Direct Executable (Default)</option>
+                </select>
+              </label>
+
+              <label class="check-row">
+                <input type="checkbox" id="chkIncludeModIo" class="arch-check">
+                <span data-i18n="includeModIoLabel">Include mod.io directories in Vanilla switch</span>
+              </label>
+
+              <label class="check-row">
+                <input type="checkbox" id="chkMinimizeOnLaunch" class="arch-check">
+                <span data-i18n="minimizeOnLaunchLabel">Minimize after launching the game</span>
+              </label>
+
+              <div>
+                <button type="button" class="btn btn-solid" id="btnSavePreferences" data-i18n="btnSavePrefs">Save Preferences</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vosien Studio & Discord Support -->
+          <div class="arch-box studio-grid">
+            <div class="studio-info">
+              <div class="studio-brand-row">
+                <img src="logo.png" alt="Vosien Studio" width="40" height="40">
+                <div>
+                  <h3 class="section-title">RoN Mod Switcher</h3>
+                  <span class="studio-sub">Vosien Studio · v1.0.0</span>
+                </div>
+              </div>
+              <p class="studio-desc" data-i18n="aboutDesc">
+                RoN Mod Switcher performs instant same-volume moves without copying gigabytes of files.
+              </p>
+              <div class="studio-version-bar">
+                <button type="button" class="btn btn-outline btn-sm" id="btnCheckUpdates" data-i18n="btnCheckUpdates">Version Info</button>
+                <span id="updateStatusText" class="update-status-text"></span>
+              </div>
+            </div>
+
+            <div class="support-box">
+              <span class="eyebrow">DISCORD SUPPORT</span>
+              <h4 data-i18n="discordCardTitle">Community &amp; Support</h4>
+              <p data-i18n="discordCardDesc">Join the official Vosien Studio Discord server for support and updates.</p>
+              <div class="support-actions">
+                <code class="discord-url">discord.gg/29bndFuds3</code>
+                <button type="button" class="btn btn-autumn" id="btnJoinDiscordSettings">
+                  <span data-i18n="btnJoinDiscord">Join Discord Server</span>
+                  <span aria-hidden="true">→</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Full-Window Drag & Drop Overlay -->
+  <div id="dropOverlay" class="drop-overlay" hidden>
+    <div class="drop-box">
+      <h3 data-i18n="dropHintTitle">Drop Mod Files to Install</h3>
+      <p data-i18n="dropHintDesc">Supports .pak, .ucas, .utoc, .sig, .zip archives, and mod folders</p>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastStack" class="toast-stack" aria-live="polite"></div>
+
+  <!-- Native Modal: Create Custom Profile -->
+  <dialog id="newProfileDialog" class="arch-dialog" aria-labelledby="newProfileDialogTitle">
+    <form id="newProfileForm" method="dialog" class="dialog-body">
+      <span class="eyebrow">NEW LOADOUT</span>
+      <h2 id="newProfileDialogTitle" data-i18n="modalNewProfileTitle">Create Custom Profile</h2>
+      <p class="dialog-note" data-i18n="modalNewProfileNote">Your currently enabled mods will be saved into this profile.</p>
+
+      <label class="form-field">
+        <span class="field-label" data-i18n="fieldProfileName">Profile Name</span>
+        <input type="text" id="inputProfileName" class="arch-input" required maxlength="40" autofocus>
+      </label>
+
+      <label class="form-field">
+        <span class="field-label" data-i18n="fieldProfileDesc">Description (Optional)</span>
+        <input type="text" id="inputProfileDesc" class="arch-input" maxlength="120">
+      </label>
+
+      <label class="check-row">
+        <input type="checkbox" id="inputProfileChecksum" class="arch-check" checked>
+        <span data-i18n="fieldDisableChecksum">Disable Server Side Checksum</span>
+      </label>
+
+      <label class="check-row">
+        <input type="checkbox" id="inputProfileModIo" class="arch-check" checked>
+        <span data-i18n="fieldEnableModIo">Keep mod.io mods enabled</span>
+      </label>
+
+      <div class="dialog-actions">
+        <button type="button" id="btnCancelNewProfile" class="btn btn-ghost" data-i18n="btnCancel">Cancel</button>
+        <button type="submit" value="confirm" class="btn btn-solid" data-i18n="btnCreate">Create Profile</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Native Modal: Delete Mod Confirmation -->
+  <dialog id="deleteModDialog" class="arch-dialog" aria-labelledby="deleteModDialogTitle">
+    <form method="dialog" class="dialog-body">
+      <span class="eyebrow">CONFIRMATION</span>
+      <h2 id="deleteModDialogTitle" data-i18n="modalDeleteTitle">Delete Mod Package?</h2>
+      <p class="dialog-note" id="deleteModDialogBody"></p>
+      <div class="dialog-actions">
+        <button type="submit" value="cancel" class="btn btn-outline" autofocus data-i18n="btnCancel">Cancel</button>
+        <button type="submit" value="delete" class="btn btn-danger" data-i18n="btnConfirmDelete">Move to Recycle Bin</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Native Modal: Share & Compare Co-Op Loadout -->
+  <dialog id="shareCompareDialog" class="arch-dialog arch-dialog-wide" aria-labelledby="shareCompareDialogTitle">
+    <div class="dialog-body">
+      <div class="dialog-head-row">
+        <div>
+          <span class="eyebrow">CO-OP SYNC</span>
+          <h2 id="shareCompareDialogTitle" data-i18n="modalShareTitle">Share &amp; Compare Co-Op Loadout</h2>
+        </div>
+        <button type="button" id="btnCloseShareDialog" class="btn btn-ghost btn-sm" data-i18n="btnClose">Close</button>
+      </div>
+
+      <div class="share-section">
+        <div class="share-row">
+          <label class="form-field share-select-wrap">
+            <span class="field-label" data-i18n="shareExportLabel">Profile to Export</span>
+            <select id="shareExportSelect" class="arch-select"></select>
+          </label>
+          <button type="button" id="btnCopyShareCode" class="btn btn-autumn btn-sm" data-i18n="btnCopyShare">Copy Share Code</button>
+        </div>
+        <textarea id="shareExportPreview" class="arch-textarea mono-code" rows="4" readonly></textarea>
+      </div>
+
+      <div class="share-divider"></div>
+
+      <div class="share-section">
+        <label class="form-field">
+          <span class="field-label" data-i18n="shareImportLabel">Paste Friend's Share Code or .pak List</span>
+          <textarea id="shareImportInput" class="arch-textarea mono-code" rows="3"></textarea>
+        </label>
+        <div class="toolbar-group">
+          <button type="button" id="btnCompareShared" class="btn btn-solid btn-sm" data-i18n="btnCompareNow">Compare</button>
+          <button type="button" id="btnSyncCoopFromShare" class="btn btn-autumn btn-sm" hidden data-i18n="btnSyncCoop">Sync Co-Op Profile</button>
+        </div>
+
+        <div id="compareResultBox" class="compare-grid" hidden>
+          <div class="compare-col">
+            <strong class="compare-head is-ok" id="compareMatchHead">Matching (0)</strong>
+            <ul id="compareMatchList" class="compare-list"></ul>
+          </div>
+          <div class="compare-col">
+            <strong class="compare-head is-missing" id="compareMissingHead">Missing Locally (0)</strong>
+            <ul id="compareMissingList" class="compare-list"></ul>
+          </div>
+          <div class="compare-col">
+            <strong class="compare-head is-extra" id="compareExtraHead">Extra Enabled (0)</strong>
+            <ul id="compareExtraList" class="compare-list"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
